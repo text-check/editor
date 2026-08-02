@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Shared Clipboard</title>
+<title>Text Editor</title>
 
 <link rel="stylesheet" href="style.css">
 </head>
@@ -13,28 +12,36 @@
 
 <div class="container">
 
-    <h1>📋 Shared Clipboard</h1>
+    <h1>📋 Text Editor</h1>
 
-    <textarea
-        id="message"
-        placeholder="Buraya yapıştır..."
-    ></textarea>
+    <!-- Mobil -->
+    <div id="mobileEditor">
 
-    <button id="saveBtn">💾 Kaydet</button>
+        <textarea
+            id="message"
+            placeholder="Buraya yapıştır..."
+        ></textarea>
 
-    <div id="status"></div>
+        <button id="saveBtn">
+            💾 Save
+        </button>
 
-    <div class="card">
+        <div id="status"></div>
 
-        <div class="cardHeader">
-            <span>Son Kaydedilen</span>
+    </div>
 
-            <button id="copyBtn">
-                📋 Kopyala
-            </button>
+    <!-- Desktop -->
+    <div id="desktopViewer">
+
+        <div class="card">
+
+            <pre id="preview"></pre>
+
         </div>
 
-        <pre id="preview"></pre>
+        <button id="copyBtn">
+            📋 Copy
+        </button>
 
     </div>
 
