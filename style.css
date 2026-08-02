@@ -4,7 +4,7 @@
 
 body{
     margin:0;
-    background:#f5f5f5;
+    background:#f4f6f8;
     font-family:system-ui,sans-serif;
 }
 
@@ -22,19 +22,34 @@ h1{
 
 }
 
+/* MOBIL */
+
+#mobileEditor{
+
+    display:block;
+
+}
+
+#desktopViewer{
+
+    display:none;
+
+}
+
 textarea{
 
     width:100%;
-    height:180px;
+    height:220px;
 
     padding:18px;
 
     border-radius:12px;
+
     border:1px solid #ccc;
 
-    font-size:16px;
-
     resize:vertical;
+
+    font-size:15px;
 
     font-family:
     ui-monospace,
@@ -48,77 +63,45 @@ textarea{
     width:100%;
     margin-top:15px;
 
-    padding:15px;
-
-    font-size:18px;
+    padding:16px;
 
     border:none;
 
     border-radius:12px;
 
-    cursor:pointer;
-
     background:#2563eb;
+
     color:white;
 
-}
+    font-size:18px;
 
-#saveBtn:hover{
-
-    background:#1d4ed8;
+    cursor:pointer;
 
 }
 
 #status{
 
-    height:24px;
-
-    color:green;
-
-    margin-top:10px;
+    margin-top:12px;
 
     text-align:center;
 
+    color:#16a34a;
+
+    height:24px;
+
 }
+
+/* DESKTOP */
 
 .card{
 
-    margin-top:35px;
-
     background:white;
 
-    border-radius:14px;
+    border-radius:16px;
 
-    padding:20px;
+    box-shadow:0 8px 30px rgba(0,0,0,.08);
 
-    box-shadow:
-    0 5px 20px rgba(0,0,0,.08);
-
-}
-
-.cardHeader{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    margin-bottom:15px;
-
-}
-
-#copyBtn{
-
-    border:none;
-
-    background:#16a34a;
-
-    color:white;
-
-    padding:10px 16px;
-
-    border-radius:8px;
+    padding:30px;
 
     cursor:pointer;
 
@@ -126,14 +109,15 @@ textarea{
 
 #preview{
 
+    margin:0;
+
+    min-height:250px;
+
     white-space:pre-wrap;
+
     word-break:break-word;
 
-    font-size:15px;
-
-    min-height:100px;
-
-    margin:0;
+    font-size:16px;
 
     font-family:
     ui-monospace,
@@ -142,12 +126,36 @@ textarea{
 
 }
 
-@media(max-width:700px){
+#copyBtn{
 
-.card{
+    margin-top:20px;
 
-    margin-top:25px;
+    width:100%;
+
+    padding:15px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#16a34a;
+
+    color:white;
+
+    font-size:18px;
+
+    cursor:pointer;
 
 }
+
+@media (min-width:768px){
+
+    #mobileEditor{
+        display:none;
+    }
+
+    #desktopViewer{
+        display:block;
+    }
 
 }
