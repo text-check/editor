@@ -3,24 +3,40 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Text Editor</title>
+
+<title>Shared Clipboard</title>
 
 <link rel="stylesheet" href="style.css">
-
 </head>
+
 <body>
 
 <div class="container">
 
-<h1>Text Editor</h1>
+    <h1>📋 Shared Clipboard</h1>
 
-<textarea id="message" placeholder="Bir şey yaz..."></textarea>
+    <textarea
+        id="message"
+        placeholder="Buraya yapıştır..."
+    ></textarea>
 
-<button id="saveBtn">Kaydet</button>
+    <button id="saveBtn">💾 Kaydet</button>
 
-<h2>Mesajlar</h2>
+    <div id="status"></div>
 
-<div id="messages"></div>
+    <div class="card">
+
+        <div class="cardHeader">
+            <span>Son Kaydedilen</span>
+
+            <button id="copyBtn">
+                📋 Kopyala
+            </button>
+        </div>
+
+        <pre id="preview"></pre>
+
+    </div>
 
 </div>
 
