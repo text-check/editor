@@ -1,15 +1,11 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
 
 import {
-getFirestore,
-collection,
-addDoc,
-query,
-orderBy,
-limit,
-onSnapshot,
-serverTimestamp
-
+  getFirestore,
+  doc,
+  setDoc,
+  onSnapshot,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -22,50 +18,28 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-const db=getFirestore(app);
+const textarea = document.getElementById("message");
+const saveBtn = document.getElementById("saveBtn");
 
-const saveBtn=document.getElementById("saveBtn");
-const textarea=document.getElementById("message");
-const messages=document.getElementById("messages");
+const noteRef = doc(db, "shared", "note");
 
-saveBtn.onclick=async()=>{
-
-const text=textarea.value.trim();
-
-if(text==="") return;
-
-await addDoc(collection(db,"messages"),{
-
-text,
-createdAt:serverTimestamp()
-
+// Firestore'daki notu sürekli dinle
+onSnapshot(noteRef, (snapshot) => {
+  if (snapshot.exists()) {
+    textarea.value = snapshot.data().text || "";
+  } else {
+    textarea.value = "";
+  }
 });
 
-textarea.value="";
+// Kaydet
+saveBtn.onclick = async () => {
+  await setDoc(noteRef, {
+    text: textarea.value,
+    updatedAt: serverTimestamp()
+  });
 
+  alert("Kaydedildi.");
 };
-
-const q=query(
-collection(db,"messages"),
-orderBy("createdAt","desc"),
-limit(5)
-);
-
-onSnapshot(q,(snapshot)=>{
-
-messages.innerHTML="";
-
-snapshot.forEach(doc=>{
-
-const div=document.createElement("div");
-
-div.className="card";
-
-div.innerText=doc.data().text;
-
-messages.appendChild(div);
-
-});
-
-});
