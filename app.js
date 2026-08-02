@@ -36,10 +36,15 @@ onSnapshot(noteRef, (snapshot) => {
 
 // Kaydet
 saveBtn.onclick = async () => {
-  await setDoc(noteRef, {
-    text: textarea.value,
-    updatedAt: serverTimestamp()
-  });
+  try {
+    await setDoc(noteRef, {
+      text: textarea.value,
+      updatedAt: serverTimestamp()
+    });
 
-  alert("Kaydedildi.");
+    alert("Kaydedildi.");
+  } catch (e) {
+    console.error(e);
+    alert(e.message);
+  }
 };
