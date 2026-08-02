@@ -23,10 +23,11 @@ const db = getFirestore(app);
 const noteRef = doc(db, "shared", "note");
 
 const textarea = document.getElementById("message");
-const preview = document.getElementById("preview");
 const saveBtn = document.getElementById("saveBtn");
-const copyBtn = document.getElementById("copyBtn");
 const status = document.getElementById("status");
+
+const preview = document.getElementById("preview");
+const copyBtn = document.getElementById("copyBtn");
 
 let currentText = "";
 
@@ -36,43 +37,47 @@ onSnapshot(noteRef, (snapshot) => {
 
     currentText = snapshot.data().text || "";
 
-    preview.textContent = currentText;
+    if (preview)
+        preview.textContent = currentText;
 
-    if (document.activeElement !== textarea) {
+    if (textarea && document.activeElement !== textarea)
         textarea.value = currentText;
-    }
 
 });
 
-saveBtn.onclick = async () => {
+if(saveBtn){
 
-    try{
+    saveBtn.onclick = async()=>{
 
-        await setDoc(noteRef,{
+        try{
 
-            text:textarea.value,
-            updatedAt:serverTimestamp()
+            await setDoc(noteRef,{
 
-        });
+                text:textarea.value,
+                updatedAt:serverTimestamp()
 
-        status.textContent="✓ Kaydedildi";
+            });
 
-        setTimeout(()=>{
+            status.textContent="✓ Kaydedildi";
 
-            status.textContent="";
+            setTimeout(()=>{
 
-        },2000);
+                status.textContent="";
 
-    }
-    catch(e){
+            },1500);
 
-        status.textContent=e.message;
+        }
+        catch(e){
 
-    }
+            status.textContent=e.message;
 
-};
+        }
 
-copyBtn.onclick = async()=>{
+    };
+
+}
+
+async function copy(){
 
     await navigator.clipboard.writeText(currentText);
 
@@ -84,6 +89,16 @@ copyBtn.onclick = async()=>{
 
     },1500);
 
-};
+}
 
-preview.onclick = ()=>copyBtn.click();
+if(copyBtn){
+
+    copyBtn.onclick=copy;
+
+}
+
+if(preview){
+
+    preview.onclick=copy;
+
+}
