@@ -1,3 +1,4 @@
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
 
 import {
@@ -8,6 +9,7 @@ import {
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
+
 const firebaseConfig = {
     apiKey: "AIzaSyBO33H0nxCOXNuXCAF8Lu_GphV_hqXPn4w",
     authDomain: "text-editor-1eaa1.firebaseapp.com",
@@ -17,88 +19,113 @@ const firebaseConfig = {
     appId: "1:253493624403:web:8bcbdd54b6809b435a90a6"
 };
 
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const noteRef = doc(db, "shared", "note");
 
+
 const textarea = document.getElementById("message");
 const saveBtn = document.getElementById("saveBtn");
+const copyBtn = document.getElementById("copyBtn");
 const status = document.getElementById("status");
 
-const preview = document.getElementById("preview");
-const copyBtn = document.getElementById("copyBtn");
 
 let currentText = "";
 
+
+/* FIREBASE'DEN METNİ DİNLE */
+
 onSnapshot(noteRef, (snapshot) => {
 
-    if (!snapshot.exists()) return;
+    if (!snapshot.exists()) {
+        return;
+    }
 
     currentText = snapshot.data().text || "";
 
-    if (preview)
-        preview.textContent = currentText;
-
-    if (textarea && document.activeElement !== textarea)
+    /*
+     * Kullanıcı şu anda textarea'ya yazmıyorsa
+     * Firebase'deki güncel metni göster.
+     */
+    if (document.activeElement !== textarea) {
         textarea.value = currentText;
+    }
 
 });
 
-if(saveBtn){
 
-    saveBtn.onclick = async()=>{
+/* KAYDET */
 
-        try{
+saveBtn.addEventListener("click", async () => {
 
-            await setDoc(noteRef,{
+    try {
 
-                text:textarea.value,
-                updatedAt:serverTimestamp()
+        saveBtn.disabled = true;
+        saveBtn.textContent = "⏳ Kaydediliyor...";
 
-            });
+        const text = textarea.value;
 
-            status.textContent="✓ Kaydedildi";
+        await setDoc(noteRef, {
 
-            setTimeout(()=>{
+            text: text,
+            updatedAt: serverTimestamp()
 
-                status.textContent="";
+        });
 
-            },1500);
+        currentText = text;
 
-        }
-        catch(e){
+        status.textContent = "✓ Kaydedildi";
 
-            status.textContent=e.message;
+        setTimeout(() => {
+            status.textContent = "";
+        }, 1500);
 
-        }
+    }
 
-    };
+    catch (error) {
 
-}
+        console.error(error);
 
-async function copy(){
+        status.textContent = "⚠ Bir hata oluştu";
 
-    await navigator.clipboard.writeText(currentText);
+    }
 
-    copyBtn.textContent="✓ Kopyalandı";
+    finally {
 
-    setTimeout(()=>{
+        saveBtn.disabled = false;
+        saveBtn.textContent = "💾 Kaydet";
 
-        copyBtn.textContent="📋 Kopyala";
+    }
 
-    },1500);
+});
 
-}
 
-if(copyBtn){
+/* KOPYALA */
 
-    copyBtn.onclick=copy;
+copyBtn.addEventListener("click", async () => {
 
-}
+    try {
 
-if(preview){
+        await navigator.clipboard.writeText(textarea.value);
 
-    preview.onclick=copy;
+        copyBtn.textContent = "✓ Kopyalandı";
 
-}
+        setTimeout(() => {
+
+            copyBtn.textContent = "📋 Kopyala";
+
+        }, 1500);
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        status.textContent = "⚠ Kopyalama başarısız";
+
+    }
+
+});
