@@ -1,11 +1,13 @@
+```html
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Text Editor</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="stylesheet" href="style.css">
+    <title>Text Editor</title>
+
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -14,34 +16,26 @@
 
     <h1>📋 Text Editor</h1>
 
-    <!-- Mobil -->
-    <div id="mobileEditor">
+    <div class="editor-card">
 
         <textarea
             id="message"
             placeholder="Buraya yapıştır..."
         ></textarea>
 
-        <button id="saveBtn">
-            💾 Save
-        </button>
+        <div class="buttons">
 
-        <div id="status"></div>
+            <button id="saveBtn" class="save-btn">
+                💾 Kaydet
+            </button>
 
-    </div>
-
-    <!-- Desktop -->
-    <div id="desktopViewer">
-
-        <div class="card">
-
-            <pre id="preview"></pre>
+            <button id="copyBtn" class="copy-btn">
+                📋 Kopyala
+            </button>
 
         </div>
 
-        <button id="copyBtn">
-            📋 Copy
-        </button>
+        <div id="status"></div>
 
     </div>
 
@@ -51,3 +45,4 @@
 
 </body>
 </html>
+```
