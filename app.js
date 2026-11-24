@@ -5,7 +5,7 @@ import {
     getFirestore,
     doc,
     setDoc,
-    onSnapshot,
+    getDoc,
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
@@ -29,31 +29,55 @@ const noteRef = doc(db, "shared", "note");
 const textarea = document.getElementById("message");
 const saveBtn = document.getElementById("saveBtn");
 const copyBtn = document.getElementById("copyBtn");
+const refreshBtn = document.getElementById("refreshBtn");
 const status = document.getElementById("status");
 
 
-let currentText = "";
+/* FIREBASE'DEN METNİ YÜKLE */
 
+async function loadText() {
 
-/* FIREBASE'DEN METNİ DİNLE */
+    try {
 
-onSnapshot(noteRef, (snapshot) => {
+        refreshBtn.disabled = true;
+        refreshBtn.textContent = "⏳ Yükleniyor...";
 
-    if (!snapshot.exists()) {
-        return;
+        const snapshot = await getDoc(noteRef);
+
+        if (snapshot.exists()) {
+
+            textarea.value = snapshot.data().text || "";
+
+            status.textContent = "✓ Güncel metin yüklendi";
+
+        } else {
+
+            status.textContent = "Henüz kayıtlı metin yok";
+
+        }
+
     }
 
-    currentText = snapshot.data().text || "";
+    catch (error) {
 
-    /*
-     * Kullanıcı şu anda textarea'ya yazmıyorsa
-     * Firebase'deki güncel metni göster.
-     */
-    if (document.activeElement !== textarea) {
-        textarea.value = currentText;
+        console.error(error);
+        status.textContent = "⚠ Yükleme başarısız";
+
     }
 
-});
+    finally {
+
+        refreshBtn.disabled = false;
+        refreshBtn.textContent = "🔄 Yenile";
+
+    }
+
+}
+
+
+/* SAYFA AÇILINCA BİR KEZ YÜKLE */
+
+loadText();
 
 
 /* KAYDET */
@@ -74,21 +98,14 @@ saveBtn.addEventListener("click", async () => {
 
         });
 
-        currentText = text;
-
         status.textContent = "✓ Kaydedildi";
-
-        setTimeout(() => {
-            status.textContent = "";
-        }, 1500);
 
     }
 
     catch (error) {
 
         console.error(error);
-
-        status.textContent = "⚠ Bir hata oluştu";
+        status.textContent = "⚠ Kaydetme başarısız";
 
     }
 
@@ -100,6 +117,11 @@ saveBtn.addEventListener("click", async () => {
     }
 
 });
+
+
+/* YENİLE */
+
+refreshBtn.addEventListener("click", loadText);
 
 
 /* KOPYALA */
@@ -123,7 +145,6 @@ copyBtn.addEventListener("click", async () => {
     catch (error) {
 
         console.error(error);
-
         status.textContent = "⚠ Kopyalama başarısız";
 
     }
