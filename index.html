@@ -1,6 +1,7 @@
 
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,42 +13,49 @@
 
 <body>
 
-<div class="container">
+    <div class="container">
 
-    <h1>📋 Text Editor</h1>
+        <h1>Text Editor</h1>
 
-    <div class="editor-card">
+        <div class="editor-card">
 
-        <textarea
-            id="message"
-            placeholder="Buraya yapıştır..."
-        ></textarea>
+            <textarea
+                id="message"
+                placeholder="Buraya yapıştır..."
+            ></textarea>
 
+            <div class="buttons">
 
-<div class="buttons">
+                <button
+                    id="saveBtn"
+                    class="save-btn"
+                >
+                    💾 Kaydet
+                </button>
 
-    <button id="saveBtn" class="save-btn">
-        💾 Kaydet
-    </button>
+                <button
+                    id="refreshBtn"
+                    class="refresh-btn"
+                >
+                    🔄 Yenile
+                </button>
 
-    <button id="refreshBtn" class="refresh-btn">
-        🔄 Yenile
-    </button>
+                <button
+                    id="copyBtn"
+                    class="copy-btn"
+                >
+                    📋 Kopyala
+                </button>
 
-    <button id="copyBtn" class="copy-btn">
-        📋 Kopyala
-    </button>
+            </div>
 
-</div>
+            <div id="status" aria-live="polite"></div>
 
-
-        <div id="status"></div>
+        </div>
 
     </div>
 
-</div>
-
-<script type="module" src="app.js"></script>
+    <script type="module" src="app.js?v=2"></script>
 
 </body>
 </html>
