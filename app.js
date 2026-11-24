@@ -21,6 +21,7 @@ const textarea = document.getElementById("message");
 const saveBtn = document.getElementById("saveBtn");
 const refreshBtn = document.getElementById("refreshBtn");
 const copyBtn = document.getElementById("copyBtn");
+const clearBtn = document.getElementById("clearBtn");
 const status = document.getElementById("status");
 
 
@@ -103,6 +104,91 @@ async function loadText() {
     }
 
 }
+
+
+/* =====================================
+   CLEAR TEXT
+===================================== */
+
+async function clearText() {
+
+    const confirmed = confirm(
+        "Kayıtlı metni silmek istediğine emin misin?"
+    );
+
+    if (!confirmed) return;
+
+    try {
+
+        clearBtn.disabled = true;
+        clearBtn.textContent = "⏳ Siliniyor...";
+
+        const url = new URL(DOCUMENT_URL);
+
+        url.searchParams.set("key", API_KEY);
+
+        url.searchParams.append(
+            "updateMask.fieldPaths",
+            "text"
+        );
+
+        url.searchParams.append(
+            "updateMask.fieldPaths",
+            "updatedAt"
+        );
+
+        const response = await fetch(url.toString(), {
+
+            method: "PATCH",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+
+                fields: {
+
+                    text: {
+                        stringValue: ""
+                    },
+
+                    updatedAt: {
+                        timestampValue: new Date().toISOString()
+                    }
+
+                }
+
+            })
+
+        });
+
+        await checkResponse(response);
+
+        // Ekrandaki metni de temizle.
+        textarea.value = "";
+
+        showStatus("✓ Metin başarıyla silindi");
+
+    }
+
+    catch (error) {
+
+        console.error("CLEAR ERROR:", error);
+
+        showStatus("⚠ Silme hatası: " + error.message);
+
+    }
+
+    finally {
+
+        clearBtn.disabled = false;
+        clearBtn.textContent = "🗑️ Metni Sil";
+
+    }
+
+}
+
 
 
 /* =====================================
@@ -220,6 +306,8 @@ saveBtn.addEventListener("click", saveText);
 refreshBtn.addEventListener("click", loadText);
 
 copyBtn.addEventListener("click", copyText);
+
+clearBtn.addEventListener("click", clearText);
 
 
 /* =====================================
