@@ -1,39 +1,62 @@
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+/* FIRESTORE REST API CONFIG */
 
-import {
-    getFirestore,
-    doc,
-    setDoc,
-    getDoc,
-    serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+const PROJECT_ID = "text-editor-1eaa1";
 
+const API_KEY = "AIzaSyBO33H0nxCOXNuXCAF8Lu_GphV_hqXPn4w";
 
-const firebaseConfig = {
-    apiKey: "AIzaSyBO33H0nxCOXNuXCAF8Lu_GphV_hqXPn4w",
-    authDomain: "text-editor-1eaa1.firebaseapp.com",
-    projectId: "text-editor-1eaa1",
-    storageBucket: "text-editor-1eaa1.firebasestorage.app",
-    messagingSenderId: "253493624403",
-    appId: "1:253493624403:web:8bcbdd54b6809b435a90a6"
-};
+const DOCUMENT_URL =
+    `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents/shared/note`;
+
+const API_URL = `${DOCUMENT_URL}?key=${encodeURIComponent(API_KEY)}`;
 
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-const noteRef = doc(db, "shared", "note");
-
+/* HTML ELEMENTS */
 
 const textarea = document.getElementById("message");
+
 const saveBtn = document.getElementById("saveBtn");
-const copyBtn = document.getElementById("copyBtn");
+
 const refreshBtn = document.getElementById("refreshBtn");
+
+const copyBtn = document.getElementById("copyBtn");
+
 const status = document.getElementById("status");
 
 
-/* FIREBASE'DEN METNİ YÜKLE */
+/* STATUS */
+
+function showStatus(message) {
+    status.textContent = message;
+}
+
+
+/* FIREBASE ERROR HANDLING */
+
+async function checkResponse(response) {
+
+    if (response.ok) {
+        return;
+    }
+
+    let errorMessage = `HTTP ${response.status}`;
+
+    try {
+
+        const data = await response.json();
+
+        errorMessage =
+            data.error?.message || errorMessage;
+
+    } catch (error) {
+        // JSON okunamazsa HTTP hatasını kullan.
+    }
+
+    throw new Error(errorMessage);
+}
+
+
+/* LOAD TEXT */
 
 async function loadText() {
 
@@ -42,26 +65,37 @@ async function loadText() {
         refreshBtn.disabled = true;
         refreshBtn.textContent = "⏳ Yükleniyor...";
 
-        const snapshot = await getDoc(noteRef);
+        const response = await fetch(API_URL, {
+            method: "GET",
+            cache: "no-store"
+        });
 
-        if (snapshot.exists()) {
+        // Henüz kayıtlı belge yok.
+        if (response.status === 404) {
 
-            textarea.value = snapshot.data().text || "";
+            textarea.value = "";
 
-            status.textContent = "✓ Güncel metin yüklendi";
+            showStatus("Henüz kayıtlı metin yok");
 
-        } else {
-
-            status.textContent = "Henüz kayıtlı metin yok";
-
+            return;
         }
+
+        await checkResponse(response);
+
+        const data = await response.json();
+
+        textarea.value =
+            data.fields?.text?.stringValue || "";
+
+        showStatus("✓ Güncel metin yüklendi");
 
     }
 
     catch (error) {
 
-        console.error(error);
-        status.textContent = "⚠ Yükleme başarısız";
+        console.error("LOAD ERROR:", error);
+
+        showStatus("⚠ Yükleme hatası: " + error.message);
 
     }
 
@@ -75,14 +109,9 @@ async function loadText() {
 }
 
 
-/* SAYFA AÇILINCA BİR KEZ YÜKLE */
+/* SAVE TEXT */
 
-loadText();
-
-
-/* KAYDET */
-
-saveBtn.addEventListener("click", async () => {
+async function saveText() {
 
     try {
 
@@ -91,21 +120,57 @@ saveBtn.addEventListener("click", async () => {
 
         const text = textarea.value;
 
-        await setDoc(noteRef, {
+        const url = new URL(DOCUMENT_URL);
 
-            text: text,
-            updatedAt: serverTimestamp()
+        url.searchParams.set("key", API_KEY);
+
+        url.searchParams.append(
+            "updateMask.fieldPaths",
+            "text"
+        );
+
+        url.searchParams.append(
+            "updateMask.fieldPaths",
+            "updatedAt"
+        );
+
+        const response = await fetch(url, {
+
+            method: "PATCH",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+
+                fields: {
+
+                    text: {
+                        stringValue: text
+                    },
+
+                    updatedAt: {
+                        timestampValue: new Date().toISOString()
+                    }
+
+                }
+
+            })
 
         });
 
-        status.textContent = "✓ Kaydedildi";
+        await checkResponse(response);
+
+        showStatus("✓ Başarıyla kaydedildi");
 
     }
 
     catch (error) {
 
-        console.error(error);
-        status.textContent = "⚠ Kaydetme başarısız";
+        console.error("SAVE ERROR:", error);
+
+        showStatus("⚠ Kaydetme hatası: " + error.message);
 
     }
 
@@ -116,17 +181,12 @@ saveBtn.addEventListener("click", async () => {
 
     }
 
-});
+}
 
 
-/* YENİLE */
+/* COPY TEXT */
 
-refreshBtn.addEventListener("click", loadText);
-
-
-/* KOPYALA */
-
-copyBtn.addEventListener("click", async () => {
+async function copyText() {
 
     try {
 
@@ -144,9 +204,24 @@ copyBtn.addEventListener("click", async () => {
 
     catch (error) {
 
-        console.error(error);
-        status.textContent = "⚠ Kopyalama başarısız";
+        console.error("COPY ERROR:", error);
+
+        showStatus("⚠ Kopyalama başarısız");
 
     }
 
-});
+}
+
+
+/* BUTTON EVENTS */
+
+saveBtn.addEventListener("click", saveText);
+
+refreshBtn.addEventListener("click", loadText);
+
+copyBtn.addEventListener("click", copyText);
+
+
+/* INITIAL LOAD */
+
+loadText();
