@@ -162,6 +162,27 @@ button:disabled {
 
 
 
+.clear-btn {
+    background: #dc2626;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.clear-btn:hover {
+    background: #b91c1c;
+}
+
+.clear-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+
 
 /* STATUS */
 
