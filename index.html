@@ -3,61 +3,98 @@
 <html lang="tr">
 
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#f5f7fb">
 
     <title>Text Editor</title>
 
     <link rel="stylesheet" href="style.css">
-
 </head>
 
 <body>
 
-    <div class="container">
+    <main class="container">
 
-        <h1>📋 Text Editor</h1>
+        <header class="header">
 
-        <div class="editor-card">
+            <div class="logo">
+                <div class="logo-icon">T</div>
+                <h1>Text Editor</h1>
+            </div>
 
-            <textarea
-                id="message"
-                placeholder="Buraya yapıştır..."
-            ></textarea>
+            <p class="subtitle">
+                Metinlerini kolayca sakla, düzenle ve paylaş.
+            </p>
 
-            <div class="buttons">
+        </header>
 
-               <div class="buttons">
 
-    <button id="saveBtn" class="save-btn">
-        💾 Kaydet
-    </button>
+        <section class="editor-card">
 
-    <button id="refreshBtn" class="refresh-btn">
-        🔄 Yenile
-    </button>
+            <div class="editor-header">
 
-    <button id="copyBtn" class="copy-btn">
-        📋 Kopyala
-    </button>
+                <div>
+                    <h2>Metin Alanı</h2>
+                    <p>Metnini buraya yapıştırabilirsin.</p>
+                </div>
 
-    <button id="clearBtn" class="clear-btn">
-        🗑️ Metni Sil
-    </button>
-
-</div>
+                <span class="editor-badge">
+                    <span class="status-dot"></span>
+                    Online
+                </span>
 
             </div>
 
-            <div id="status" aria-live="polite"></div>
 
-        </div>
+            <textarea
+                id="message"
+                placeholder="Buraya metnini yapıştır veya yazmaya başla..."
+                spellcheck="false"
+            ></textarea>
 
-    </div>
 
-    <script type="module" src="app.js?v=3"></script>
+            <div class="buttons">
+
+                <button id="saveBtn" class="save-btn">
+                    <span>💾</span>
+                    Kaydet
+                </button>
+
+                <button id="refreshBtn" class="refresh-btn">
+                    <span>↻</span>
+                    Yenile
+                </button>
+
+                <button id="copyBtn" class="copy-btn">
+                    <span>📋</span>
+                    Kopyala
+                </button>
+
+                <button id="clearBtn" class="clear-btn">
+                    <span>✕</span>
+                    Metni Sil
+                </button>
+
+            </div>
+
+
+            <div class="status-wrapper">
+                <div id="status" aria-live="polite"></div>
+            </div>
+
+        </section>
+
+
+        <footer>
+            <span>Simple. Fast. Reliable.</span>
+        </footer>
+
+    </main>
+
+
+    <script type="module" src="app.js?v=4"></script>
 
 </body>
 
