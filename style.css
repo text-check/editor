@@ -117,6 +117,8 @@ button:disabled {
 }
 
 
+
+
 /* SAVE */
 
 .save-btn {
@@ -130,6 +132,12 @@ button:disabled {
     background: #16a34a;
 }
 
+
+
+.buttons button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
 
 
 .refresh-btn {
@@ -146,11 +154,7 @@ button:disabled {
     background: #475569;
 }
 
-.refresh-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
+.refresh-btn:disabled,
 .buttons button:disabled {
     opacity: 0.6;
     cursor: not-allowed;
