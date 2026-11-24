@@ -1,26 +1,26 @@
 
-/* FIRESTORE REST API CONFIG */
+/* =====================================
+   FIRESTORE REST API
+   PROJECT: text-editor-new
+===================================== */
 
-const PROJECT_ID = "text-editor-1eaa1";
+const PROJECT_ID = "text-editor-new";
 
-const API_KEY = "AIzaSyBO33H0nxCOXNuXCAF8Lu_GphV_hqXPn4w";
+const API_KEY = "AIzaSyC_OwRDRacM80qvexCP_SzHU4UHUrga2XA";
 
 const DOCUMENT_URL =
     `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents/shared/note`;
 
-const API_URL = `${DOCUMENT_URL}?key=${encodeURIComponent(API_KEY)}`;
+const API_URL =
+    `${DOCUMENT_URL}?key=${encodeURIComponent(API_KEY)}`;
 
 
 /* HTML ELEMENTS */
 
 const textarea = document.getElementById("message");
-
 const saveBtn = document.getElementById("saveBtn");
-
 const refreshBtn = document.getElementById("refreshBtn");
-
 const copyBtn = document.getElementById("copyBtn");
-
 const status = document.getElementById("status");
 
 
@@ -31,32 +31,26 @@ function showStatus(message) {
 }
 
 
-/* FIREBASE ERROR HANDLING */
+/* API RESPONSE */
 
 async function checkResponse(response) {
 
-    if (response.ok) {
-        return;
-    }
+    if (response.ok) return;
 
-    let errorMessage = `HTTP ${response.status}`;
+    let message = `HTTP ${response.status}`;
 
     try {
-
         const data = await response.json();
+        message = data.error?.message || message;
+    } catch (error) {}
 
-        errorMessage =
-            data.error?.message || errorMessage;
-
-    } catch (error) {
-        // JSON okunamazsa HTTP hatasını kullan.
-    }
-
-    throw new Error(errorMessage);
+    throw new Error(message);
 }
 
 
-/* LOAD TEXT */
+/* =====================================
+   LOAD TEXT
+===================================== */
 
 async function loadText() {
 
@@ -70,14 +64,16 @@ async function loadText() {
             cache: "no-store"
         });
 
-        // Henüz kayıtlı belge yok.
         if (response.status === 404) {
 
-            textarea.value = "";
+            const errorData = await response.clone().json().catch(() => ({}));
+            const errorMessage = errorData.error?.message || "";
 
-            showStatus("Henüz kayıtlı metin yok");
-
-            return;
+            if (errorMessage.toLowerCase().includes("document")) {
+                textarea.value = "";
+                showStatus("Henüz kayıtlı metin yok");
+                return;
+            }
         }
 
         await checkResponse(response);
@@ -87,7 +83,7 @@ async function loadText() {
         textarea.value =
             data.fields?.text?.stringValue || "";
 
-        showStatus("✓ Güncel metin yüklendi");
+        showStatus("✓ Metin yüklendi");
 
     }
 
@@ -109,7 +105,9 @@ async function loadText() {
 }
 
 
-/* SAVE TEXT */
+/* =====================================
+   SAVE TEXT
+===================================== */
 
 async function saveText() {
 
@@ -117,8 +115,6 @@ async function saveText() {
 
         saveBtn.disabled = true;
         saveBtn.textContent = "⏳ Kaydediliyor...";
-
-        const text = textarea.value;
 
         const url = new URL(DOCUMENT_URL);
 
@@ -134,7 +130,7 @@ async function saveText() {
             "updatedAt"
         );
 
-        const response = await fetch(url, {
+        const response = await fetch(url.toString(), {
 
             method: "PATCH",
 
@@ -147,7 +143,7 @@ async function saveText() {
                 fields: {
 
                     text: {
-                        stringValue: text
+                        stringValue: textarea.value
                     },
 
                     updatedAt: {
@@ -184,7 +180,9 @@ async function saveText() {
 }
 
 
-/* COPY TEXT */
+/* =====================================
+   COPY TEXT
+===================================== */
 
 async function copyText() {
 
@@ -213,7 +211,9 @@ async function copyText() {
 }
 
 
-/* BUTTON EVENTS */
+/* =====================================
+   BUTTON EVENTS
+===================================== */
 
 saveBtn.addEventListener("click", saveText);
 
@@ -222,6 +222,8 @@ refreshBtn.addEventListener("click", loadText);
 copyBtn.addEventListener("click", copyText);
 
 
-/* INITIAL LOAD */
+/* =====================================
+   INITIAL LOAD
+===================================== */
 
 loadText();
