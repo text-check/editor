@@ -131,6 +131,27 @@ button:disabled {
 }
 
 
+.refresh-btn {
+    background: #64748b;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.refresh-btn:hover {
+    background: #475569;
+}
+
+.refresh-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+
 /* STATUS */
 
 #status {
