@@ -6,7 +6,7 @@
 
 const PROJECT_ID = "text-editor-new";
 
-const API_KEY = "AIzaSyC_OwRDRacM80qvexCP_SzHU4UHUrga2XA";
+const API_KEY = "AIzaSyAOdtM8d-gQvZB8UaneG-FiboLCeJYtdYY";
 
 const DOCUMENT_URL =
     `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents/shared/note`;
